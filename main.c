@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 #include "deauth-attack.h"
 
@@ -17,7 +18,7 @@ int main(int argc, char* argv[]) {
         interface = argv[1];
         ap_mac = argv[2];
         res = deauth_attack_broadcast(interface, ap_mac);
-
+        
     } else if (argc == 4) { // <interfrace> <ap mac> <station mac>
         // send station's deauth
         interface = argv[1];
@@ -25,18 +26,24 @@ int main(int argc, char* argv[]) {
         station_mac = argv[3];
         res = deauth_attack_station(interface, ap_mac, station_mac);
 
-    }else if (argc==5) { // <interfrace> <ap mac> <station mac> -auth
+    } else if (argc==5) { // <interfrace> <ap mac> <station mac> -auth
         // send station's fake auth
-        interface = argv[1];
-        ap_mac = argv[2];
-        station_mac = argv[3];
-        res = deauth_attack_auth(interface, ap_mac, station_mac);
-    }
-    else {
+        if(strcmp(argv[4], "-auth") == 0) {
+            interface = argv[1];
+            ap_mac = argv[2];
+            station_mac = argv[3];
+            res = deauth_attack_auth(interface, ap_mac, station_mac);
+        }
+        else {
+            usage();
+            res = -1;
+        }
+        
+    } else {
         usage();
         res = -1;
     }
-    
+
     return res;
     
 }
